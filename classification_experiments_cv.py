@@ -80,9 +80,6 @@ def cross_validation(train_set, class_weight,  feature_columns, cv_index):
     new_path = f'./clf_results'
     if not os.path.exists(new_path):
         os.mkdir(new_path)
-    model_path = f'./best_models'
-    if not os.path.exists(model_path):
-        os.mkdir(model_path)
     gkf = GroupKFold(n_splits=5)
     n_splits = gkf.get_n_splits(groups=train_set['Plume_id'])
     for model_name in models_dict.keys():
@@ -96,9 +93,6 @@ def cross_validation(train_set, class_weight,  feature_columns, cv_index):
         scaler = preprocessing.StandardScaler()
         gs.fit(scaler.fit_transform(train_set[feature_columns].values),
                train_set.Label.values.reshape(-1,1))
-        with open(f'./{model_path}/scaler.pkl', 'wb') as fid:
-            pickle.dump(scaler, fid)
-            fid.close()
         pd.DataFrame(gs.cv_results_).to_csv(f'./clf_results/{model_name}_cv_results_cv_index_{cv_index}.csv')
         best_model_dict[model_name]['model'] = gs.best_estimator_
         best_model_dict[model_name]['param_dict'] = gs.best_params_

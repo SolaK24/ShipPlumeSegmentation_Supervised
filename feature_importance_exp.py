@@ -11,52 +11,21 @@ np.random.seed(1234)
 
 
 
-def feature_importance_plot(d, feature_columns):
-    feature_columns_nice = ["Moran's I", "NO2", 'Level_0', 'Level_1', 'Level_2', 'Level_3', 'Level_4', 'Level_5',
-                            'Sector_0', 'Sector_1', 'Sector_2', 'Sector_3',
-                            'Wind_spd', 'Wind_dir_sin', 'Wind_dir_cos', 'Ship_length', 'Ship_spd_avg']
+def feature_importance_report(d, feature_columns):
 
-    fig, axs = plt.subplots(1, 4, figsize=(16, 4), facecolor='w', edgecolor='w')
-    fig.subplots_adjust(hspace=.0001)
-    i = 0
     df_feature_importance = pd.DataFrame()
     for model_name in list(d.keys()):
-
         if not (model_name.startswith('scaler') or model_name.startswith('SVM')):
             df = pd.DataFrame()
             if model_name in ['Linear_SVM', 'Logistic']:
-                axs[i].barh(feature_columns, d[model_name]['model'].coef_[0], alpha=0.5)
-                axs[i].set_title(f'{model_name}', fontsize=14)
-                axs[i].set_xlim(-0.2, 0.55)
-                axs[i].set_xlabel('Model coeficients', fontsize=14)
-                axs[i].xaxis.set_label_coords(0.5, -0.09)
                 df['Coefs'] = d[model_name]['model'].coef_[0]
                 df['Feature_names'] = feature_columns
                 df['Model'] = model_name
-
-
             else:
-                axs[i].barh(feature_columns, d[model_name]['model'].feature_importances_,
-                            alpha=0.5, log=True)
-                axs[i].set_title(f'{model_name}', fontsize=14)
-                axs[i].set_xlabel('Feature importance - log scale', fontsize=14)
-                axs[i].xaxis.set_label_coords(0.52, -0.09)
                 df['Coefs'] = d[model_name]['model'].feature_importances_
                 df['Feature_names'] = feature_columns
                 df['Model'] = model_name
-
-
-            axs[i].grid(alpha=0.2)
-
-            if i > 0:
-                axs[i].set_yticklabels([])
-            else:
-                axs[i].set_yticklabels(feature_columns_nice, fontsize=14)
-            i += 1
             df_feature_importance = df_feature_importance.append(df, ignore_index=True)
-
-    plt.savefig(f'./clf_results/feature_importance.png', bbox_inches='tight')
-    plt.close()
     df_feature_importance.to_csv(f'./clf_results/feature_importance_df.csv')
 
 def grid_search(train_set, class_weight,  feature_columns):
@@ -87,14 +56,12 @@ def grid_search(train_set, class_weight,  feature_columns):
         with open(f'./{model_path}/scaler.pkl', 'wb') as fid:
             pickle.dump(scaler, fid)
             fid.close()
-
-        pd.DataFrame(gs.cv_results_).to_csv(f'./clf_results/{model_name}_cv_results.csv')
         best_model_dict[model_name]['model'] = gs.best_estimator_
         best_model_dict[model_name]['param_dict'] = gs.best_params_
         with open(f'./best_models/{model_name}.pkl', 'wb') as fid:
             pickle.dump(best_model_dict[model_name]['model'], fid)
             fid.close()
-    feature_importance_plot(best_model_dict, feature_columns)
+    feature_importance_report(best_model_dict, feature_columns)
 
 
 
