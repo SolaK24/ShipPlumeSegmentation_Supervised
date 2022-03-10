@@ -1,4 +1,32 @@
 # ShipPlumeSegmentation_Supervised
 
-In this repository we provide the code used for the experiments on ship plume segmentation using multivariate classifiers on TROPOMI/S5P satellite data.
-We also provide a dataset that combines TROPOMI/S5P NO2 data, ECMWF 10m wind adat and AIS data. 
+In this repository we provide the code used for the experiments on ship plume segmentation using 
+multivariate classifiers on TROPOMI/S5P satellite data.
+
+## Data set
+In the direction ``./data`` we provide a labeled data set that can be use for supervised learning experiments.
+The data set combines TROPOMI/S5P NO2 data, ECMWF 10m wind data, information about the dimensions
+of the ships in the area. The borders of the images were defined based on AIS data of ship positions.
+Due to the privacy reasons, we removed all information about the uniqueidentifiers of the ships,
+for which the images were generated. To further protect the shipping companies 
+from all kinds unjustifiable accusations, we do not provide the exact geografical coordinates 
+for the studied TROPOMI measurements. 
+All TROPOMI measurements reported in the dataset were retrieved from the area limited by the following 
+coordinate range: [] - eastern Mediterranean region.
+
+The resulting data set is composed of the following variables: ....
+
+## Python scripts
+ - To check the performance of the models reported in the article,
+run the script ``classification_experiments_cv.py``
+ - To generate feature importance reports for the studied models, run the script ``feature_importance_exp.py``
+
+
+
+
+
+
+
+
+
+

@@ -2,14 +2,11 @@ import os
 import pickle
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from sklearn import metrics, preprocessing
-from sklearn.model_selection import RandomizedSearchCV,  GroupKFold
+from sklearn import preprocessing
+from sklearn.model_selection import RandomizedSearchCV, GroupKFold
 from model_params import model_dict, feature_columns
 
 np.random.seed(1234)
-
-
 
 def feature_importance_report(d, feature_columns):
 
@@ -66,7 +63,7 @@ def grid_search(train_set, class_weight,  feature_columns):
 
 
 
-def classify_pixels(feature_columns):
+def check_feature_importance(feature_columns):
 
     labeled_df = pd.read_csv('data/labeled_data.csv')
     df_model = labeled_df[labeled_df.sector == 1].reset_index(drop=True)
@@ -78,4 +75,4 @@ def classify_pixels(feature_columns):
 
 
 if __name__ == '__main__':
-    classify_pixels(feature_columns)
+    check_feature_importance(feature_columns)

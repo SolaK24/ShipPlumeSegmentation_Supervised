@@ -61,7 +61,6 @@ def threshold_optimization(train_set, gkf, cv_index):
         df_cv = df_cv.append(df_run, ignore_index=True)
         cvi += 1
     df_cv_gr = df_cv.groupby('Qs', as_index=False).mean()
-    df_cv_gr.to_csv(f'./clf_results/threshold_gs_{cv_index}.csv')
     argmax_m = df_cv_gr['f1_m'].argmax()
     argmax_m_high = df_cv_gr['f1_m_high'].argmax()
     argmax_no2 = df_cv_gr['f1_no2'].argmax()
@@ -98,7 +97,6 @@ def cross_validation(train_set, class_weight,  feature_columns, cv_index):
         best_model_dict[model_name]['param_dict'] = gs.best_params_
      # Threshold optimization
     df_thr = threshold_optimization(train_set, gkf, cv_index)
-    df_thr.to_csv(f'./clf_results/threshold_cv_index_{cv_index}.csv')
     return best_model_dict, scaler, df_thr
 
 
@@ -144,10 +142,6 @@ def quality_metrics(test_set, best_model_dict, feature_columns, scaler, cv_index
                                                                                          test_set[ f'y_pred_{model_name}'].values.reshape(
                                                                                              -1, 1)).round(3)
         df.loc[df.Model == model_name, 'AUC'] = auc_score
-
-        with open(f'./clf_results/Best_params_{model_name}_cv_{cv_index}.txt', 'w') as f:
-            print(best_model_dict[model_name]['param_dict'], file=f)
-            f.close()
     # Generation of the results for the threshold-based models
     thr_names = ['Moran', 'Moran_high', 'NO2']
     var_names = ['moran', 'moran_high', 'no2']
@@ -185,7 +179,7 @@ def classify_pixels(feature_columns, cv=5):
         results_df = results_df.append(clf_results, ignore_index=True)
         test_sets = test_sets.append(test_set, ignore_index=True)
     test_sets.to_csv(f'./clf_results/all_test_sets_with_clf_results.csv')
-    results_df.to_csv(f'./clf_results/results_df.csv')
+    results_df.to_csv(f'./clf_results/Results_final.csv')
 
 if __name__ == '__main__':
     classify_pixels(feature_columns)
